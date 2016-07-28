@@ -75,6 +75,11 @@ return [
             'model' => App\User::class,
         ],
 
+        'legacy-provider' => [
+            'driver' => 'legacy-provider-driver',
+            'model' => App\LegacyLogin::class,
+        ],
+
         // 'users' => [
         //     'driver' => 'database',
         //     'table' => 'users',
