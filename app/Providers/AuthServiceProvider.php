@@ -20,7 +20,7 @@ class AuthServiceProvider extends ServiceProvider
     /**
      * Register any application authentication / authorization services.
      *
-     * @param  \Illuminate\Contracts\Auth\Access\Gate  $gate
+     * @param  \Illuminate\Contracts\Auth\Access\Gate $gate
      * @return void
      */
     public function boot(GateContract $gate)
@@ -31,6 +31,16 @@ class AuthServiceProvider extends ServiceProvider
 
         \Auth::provider('legacy-provider-driver', function ($app, array $config) {
             return new EloquentUserProvider($this->app[ 'legacy-hash' ], $config[ 'model' ]);
+        });
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function register()
+    {
+        $this->app->bind('legacy-hash', function ($app) {
+            return new \App\LegacyHasher;
         });
     }
 }
