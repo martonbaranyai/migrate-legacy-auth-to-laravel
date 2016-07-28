@@ -42,4 +42,24 @@ class AuthTest extends TestCase
             ->see('Jane Smith');
     }
 
+    public function test_legacy_auth_works_and_makes_user_migration()
+    {
+        $user = factory(LegacyLogin::class)->create([
+            'name'     => 'Jane Smith',
+            'email'    => 'jane@example.com',
+            'password' => 'my_legacy_hash',
+        ]);
+
+        $this->post('/login', [
+            'email'    => 'jane@example.com',
+            'password' => 'asdf1234',
+        ])->followRedirects()
+            ->see('Welcome')
+            ->see('Jane Smith');
+
+        $migratedUser = User::find(1);
+        $this->assertEquals('Jane Smith', $migratedUser->name);
+        $this->assertEquals('jane@example.com', $migratedUser->email);
+        $this->assertNotEquals('my_legacy_hash', $migratedUser->password);
+    }
 }
