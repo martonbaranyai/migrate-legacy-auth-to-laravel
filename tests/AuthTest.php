@@ -9,12 +9,7 @@ class AuthTest extends TestCase
 {
     use DatabaseMigrations;
 
-    /**
-     * A basic functional test example.
-     *
-     * @return void
-     */
-    public function testBasicExample()
+    public function test_original_auth_still_works()
     {
         $user = factory(User::class)->create([
             'name'     => 'John Smith',
