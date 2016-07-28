@@ -1,5 +1,6 @@
 <?php
 
+use App\LegacyLogin;
 use App\User;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
@@ -27,6 +28,18 @@ class AuthTest extends TestCase
 
     public function test_legacy_auth_works()
     {
-        
+        $user = factory(LegacyLogin::class)->create([
+            'name'     => 'Jane Smith',
+            'email'    => 'jane@example.com',
+            'password' => 'my_legacy_hash',
+        ]);
+
+        $this->post('/login', [
+            'email'    => 'jane@example.com',
+            'password' => 'asdf1234',
+        ])->followRedirects()
+            ->see('Welcome')
+            ->see('Jane Smith');
     }
+
 }
