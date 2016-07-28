@@ -43,14 +43,14 @@ class AuthController extends Controller
     /**
      * Get a validator for an incoming registration request.
      *
-     * @param  array  $data
+     * @param  array $data
      * @return \Illuminate\Contracts\Validation\Validator
      */
     protected function validator(array $data)
     {
         return Validator::make($data, [
-            'name' => 'required|max:255',
-            'email' => 'required|email|max:255|unique:users',
+            'name'     => 'required|max:255',
+            'email'    => 'required|email|max:255|unique:users',
             'password' => 'required|min:6|confirmed',
         ]);
     }
@@ -58,15 +58,42 @@ class AuthController extends Controller
     /**
      * Create a new user instance after a valid registration.
      *
-     * @param  array  $data
+     * @param  array $data
      * @return User
      */
     protected function create(array $data)
     {
         return User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'password' => bcrypt($data['password']),
+            'name'     => $data[ 'name' ],
+            'email'    => $data[ 'email' ],
+            'password' => bcrypt($data[ 'password' ]),
         ]);
+    }
+
+
+    /**
+     * Get the guard to be used during authentication.
+     *
+     * Extension to check which guard to use
+     *
+     * @return string|null
+     */
+    protected function getGuard()
+    {
+        if ( $this->userAccountIsMigrated() ) {
+            return property_exists($this, 'guard') ? $this->guard : null;
+        }
+
+        return 'legacy';
+    }
+
+    /**
+     * Business logic to determine if the user is migrated already and we can use the Laravel guard
+     *
+     * @return bool
+     */
+    protected function userAccountIsMigrated()
+    {
+        return User::where('email', request('email'))->count() > 0;
     }
 }
