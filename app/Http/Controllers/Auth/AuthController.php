@@ -96,4 +96,35 @@ class AuthController extends Controller
     {
         return User::where('email', request('email'))->count() > 0;
     }
+
+    /**
+     * @param $request
+     * @param $user
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function authenticated($request, $user)
+    {
+        $this->migrateUserAccount($request, $user);
+
+        return redirect()->intended($this->redirectPath());
+    }
+
+    /**
+     * @param $request
+     * @param $user
+     */
+    protected function migrateUserAccount($request, $user)
+    {
+        if ( $this->userAccountIsMigrated() ) {
+            return;
+        }
+
+        $migratedUser = $this->create([
+            'email'    => $user->email,
+            'password' => $request->password,
+            'name'     => $user->name,
+        ]);
+
+        \Auth::login($migratedUser);
+    }
 }
