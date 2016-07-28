@@ -41,6 +41,11 @@ return [
             'provider' => 'users',
         ],
 
+        'legacy' => [
+            'driver' => 'session',
+            'provider' => 'legacy-provider',
+        ],
+
         'api' => [
             'driver' => 'token',
             'provider' => 'users',
