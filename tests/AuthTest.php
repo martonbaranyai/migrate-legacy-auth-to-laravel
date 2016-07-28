@@ -24,4 +24,9 @@ class AuthTest extends TestCase
             ->see('Welcome')
             ->see('John Smith');
     }
+
+    public function test_legacy_auth_works()
+    {
+        
+    }
 }
